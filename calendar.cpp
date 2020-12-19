@@ -1,7 +1,7 @@
 #include <iostream>
-#include <fstream>
 #include <cstring>
 #include <iomanip>
+#include <cstdlib>
 
 #include "calendar.h"
 
@@ -9,35 +9,35 @@ Calendar::Calendar() : size(30), count(0) {
         days = new Day[30];
 }
 
-void Calendar::readFile() {
-        std::fstream fp;
-        fp.open("appts.csv");
+std::istream& operator>>(std::istream& is, Calendar &calendar) {
         int month, day, year, pos;
         char buffer[80]; 
-        fp.getline(buffer, 80);
+        is.getline(buffer, 80);
 
-        while (fp.getline(buffer, 80)) {
-                month = atoi(strtok(buffer, "/")); 
-                day = atoi(strtok(NULL, "/"));
-                year = atoi(strtok(NULL, ","));
-                pos = findDay(month, day, year);
-                days[pos].read();
+        while (is.getline(buffer, 80, '/')) {
+                month = atoi(buffer);
+                is.getline(buffer, 80, '/');
+                day = atoi(buffer);
+                is.getline(buffer, 80, ',');
+                year = atoi(buffer);
+                pos = calendar.findDay(month, day, year);
+                is >> calendar.days[pos];
         }
 
-        fp.close();
+        return is;
 }
 
 int Calendar::findDay(int month, int day, int year) {
         int pos;
         Day dayTemp = Day(month, day, year); 
 
-        for (pos =  0; pos < count && !days[pos].equal(dayTemp); pos++);
+        for (pos =  0; pos < count && !(days[pos] == dayTemp); pos++);
 
         if (pos == count) {
                 if(count == size)
                         resize();
 
-                for (pos = count - 1; pos >= 0 && dayTemp.lessThan(days[pos]) ; pos--)
+                for (pos = count - 1; pos >= 0 && (dayTemp < days[pos]) ; pos--)
                         days[pos + 1] = days[pos];
 
                 days[++pos] = dayTemp;
@@ -96,7 +96,7 @@ void Calendar::getDate(int *month, int *day, int *year)
         if ((*day >= 1 && *day <= 31) && (*month >= 1 && *month <= 12) 
                 && (*year >= 1000 && *year <= 2017))
                 break;
-     
+
         std::cout << date2 << " is not a valid date.\nPlease try again.\n";
         } 
 }
@@ -114,7 +114,7 @@ void Calendar::subjectSearch() const {
         for (int i = 0; i < count; i++)
                 days[i].subjectSearch(subject);
 
-        std::cout << std::endl;
+        std::cout << '\n';
 }
 
 void Calendar::dateSearch() {
@@ -123,8 +123,8 @@ void Calendar::dateSearch() {
         Day dayTemp = Day(month, day, year);
 
         for (int i = 0; i < count; i++)
-                if (dayTemp.equal(days[i])) {
-                        days[i].print();
+                if (dayTemp == days[i]) {
+                        std::cout << days[i];
                         return;
                 }
 }

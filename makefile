@@ -1,4 +1,4 @@
-OBJS = main.cpp calendar.cpp day.cpp appt.cpp time.cpp dayofweek.cpp
+OBJS = main.cpp calendar.cpp day.cpp appt.cpp time.cpp dayofweek.cpp linkedlist.cpp
 
 CC = g++
 

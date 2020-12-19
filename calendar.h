@@ -12,7 +12,7 @@ class Calendar
   public:
     Calendar();
     ~Calendar();
-    void readFile();
+    friend std::istream& operator>>(std::istream& is, Calendar &calendar);
     void resize();
     void dateSearch();
     void subjectSearch() const;

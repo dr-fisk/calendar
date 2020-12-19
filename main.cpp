@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "calendar.h"
 #include "appt.h"
 
@@ -16,11 +17,17 @@ int getChoice() {
         return choice;
 }
 
-int main(int argv, char **argc) {
+int main(int argc, char *argv[]) {
+        if (argc != 2) {
+                std::cout << "Add your appointment.csv file in command line\n";
+                return 0;
+        }
+
         int choice;
-        Calendar *calendar;
-        calendar = new Calendar();
-        calendar->readFile();
+        Calendar calendar;
+        std::ifstream fp(argv[1]);
+        fp >> calendar;
+        fp.close();
 
         while (true) {
                 choice = getChoice();
@@ -29,13 +36,13 @@ int main(int argv, char **argc) {
                 case 0:
                         return 0;
                 case 1:
-                        calendar->dateSearch();
+                        calendar.dateSearch();
                         break;
                 case 2:
-                        calendar->subjectSearch();
+                        calendar.subjectSearch();
                         break;
                 case 3:
-                        calendar->addAppointment();
+                        calendar.addAppointment();
                         break;
                 case 4:
                         std::cout << "Appointment count: " << Appointment::getCount() << '\n';

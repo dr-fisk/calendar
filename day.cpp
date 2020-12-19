@@ -1,88 +1,72 @@
 #include <iostream>
 #include <cstdlib>
 #include <iomanip>
+#include <fstream>
 
 #include "day.h"
+#include "dayofweek.h"
 
 Day::Day() {
-
 }
 
-Day::Day(int month, int day, int year): day(day), month(month), year(year), apptCount(0) {
+Day::Day(int month, int day, int year): day(day), month(month), year(year) {
 }
 
-bool Day::equal(Day days) {
-        if(day == days.day && month == days.month && year == days.year)
+const bool Day::operator==(const Day &rhs) const {
+        if(day == rhs.day && month == rhs.month && year == rhs.year)
                 return true;
 
         return false;
 }
 
-bool Day::lessThan(Day days) {
-        if (year < days.year || (year == days.year && month < days.month) 
-                || (year == days.year && month == days.month && day < days.day))
+const bool Day::operator<(const Day &rhs)  const {
+        if (year < rhs.year || (year == rhs.year && month < rhs.month)
+                || (year == rhs.year && month == rhs.month && day < rhs.day))
                 return true;
 
         return false;
 }
 
-void Day::read() {
+std::istream& operator>>(std::istream& is, Day &day) {
         Appointment *appts = new Appointment;
-        appts->read();
-        insertAppointment(appts);
+        is >> *appts;
+        day.appt += appts;
+        return is;
 }
 
-void Day::insertAppointment(Appointment *appts) {
-        int pos = 0;
-  
-        for (pos = apptCount - 1; pos >= 0 
-                && appts->lessThan(appt[pos]); pos--)
-                appt[pos + 1] = appt[pos]; 
-
-        appt[pos + 1] = appts;
-        apptCount ++;
-}
-
-void Day::print() {
-        std::cout << "Start End   Subject      Location\n";
-
-        for (int i = 0; i < apptCount; i++)
-                appt[i]->print();
-
-        std::cout << std::endl;
+std::ostream& operator<<(std::ostream& os, const Day &day) {
+        os << "Start End   Subject      Location\n";
+        os << day.appt << '\n';
+        return os;
 }
 
 void Day::subjectSearch(const char *subject) const {
-        for (int i = 0; i < apptCount; i++)
-                if (appt[i]->equal(subject)) {
-                        DOW dow;
-                        dow.read(month, day, year);
-                        dow.print();
-                        appt[i]->print();
-                }
+                const Appointment *appointment;
+
+        while ((appointment = appt.find(subject))) {
+                        std::ifstream fp("DOW.dat", std::ios::binary);
+                        DOW dow(month, day, year);
+                        fp >> dow;
+                        std::cout << dow;
+                        std::cout << *appointment;
+                        std::cout << '\n';
+                        fp.close();
+        }
 }
 
 void Day::addAppointment() {
         Appointment *newAppointment = new Appointment;
         newAppointment->addAppointment();
-        insertAppointment(newAppointment);
+        appt += newAppointment;
 }
 
 Day& Day::operator=(const Day& rhs) {
         if (this == &rhs)
                 return *this;
- 
+
         month = rhs.month;
         day   = rhs.day;
         year  = rhs.year;
-        apptCount = rhs.apptCount;
-
-        for (int i = 0; i < rhs.apptCount; i ++) {
-                appt[i]  = rhs.appt[i];
-        }
-
+        appt = rhs.appt;
         return *this;
-}
-
-Day::~Day() {
 }

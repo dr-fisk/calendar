@@ -13,7 +13,8 @@ Appointment::Appointment() {
 }
 
 Appointment::Appointment(const Appointment &copy) 
-        : startTime(copy.startTime), endTime(copy.endTime) {
+        : startTime(copy.startTime), endTime(copy.endTime),
+          subject(NULL), location(NULL){
         if (copy.location) {
                 location = new char[strlen(copy.location) + 1];
                 strcpy(location, copy.location);
@@ -29,32 +30,37 @@ int Appointment::getCount() {
         return count;
 }
 
-void Appointment::read() {
-        char *ptr;
-        ptr = strtok(NULL, ",");
-        subject = new char[strlen(ptr) + 1];
-        strcpy(subject, ptr);
-        startTime.read();
-        endTime.read();
-        ptr = strtok(NULL, "\n");
-        location = new char[strlen(ptr) + 1];
-        strcpy(location, ptr);
+std::istream& operator>>(std::istream& is, Appointment &appt) {
+        return appt.read(is);
+}
+
+std::istream& Appointment::read(std::istream& is) {
+        char line[80];
+        is.getline(line, 80, ',');
+        subject = new char[strlen(line) + 1];
+        strcpy(subject, line);
+        is >> startTime;
+        is >> endTime;
+        is.getline(line, 80);
+        location = new char[strlen(line) + 1];
+        strcpy(location, line);
         count ++;
+        return is;
 }
 
-bool Appointment::lessThan(Appointment *appt) {
-        return startTime.lessThan(&appt->startTime);
+const bool Appointment::operator<(const Appointment &rhs) const {
+        return startTime < rhs.startTime;
 }
 
-bool Appointment::equal(const char *subject2) const {
-        return strstr(subject, subject2) != NULL;
+const bool Appointment::operator==(const char *rhs) const {
+        return strstr(subject, rhs) != NULL;
 }
 
-void Appointment::print() {
-        startTime.print();
-        endTime.print();
-        std::cout << std::left << std::setw(13) << std::setfill(' ') << subject 
-        << location << std::endl;
+std::ostream& operator<<(std::ostream& os, const Appointment &appt) {
+        os << appt.startTime << appt.endTime
+           << std::left << std::setw(13) << appt.subject 
+           << appt.location << std::right;
+        return os;
 }
 
 void Appointment::addAppointment() {
@@ -75,6 +81,9 @@ void Appointment::addAppointment() {
 }
 
 Appointment::~Appointment() {
-        delete[] subject; 
-        delete[] location;
+        if (subject)
+                delete[] subject;
+        
+        if (location)
+                delete[] location;
 }
