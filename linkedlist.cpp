@@ -1,18 +1,26 @@
 #include "linkedlist.h"
 
-Node::Node(Node *next, Appointment *data) : next(next), data(data) {
+// Constructs the node of a list
+template <typename T>
+Node<T>::Node(Node<T> *next, T data) : next(next), data(data) {
 }
 
-Node::~Node() {
+// Dellocates memory from node object
+template <typename T>
+Node<T>::~Node() {
         if (data)
                 delete data;
 }
 
-List::List() : head(NULL) {
+// Default constructor for list
+template <typename T>
+List<T>::List() : head(NULL) {
 }
 
-const Appointment* List::find(const char *subject) const {
-        static Node *current = NULL;
+// Finds the appointments in linked list that matches the subject
+template <typename T>
+const T List<T>::find(const char *subject) const {
+        static Node<T> *current = NULL;
 
         if (!current)
                 current = head;
@@ -26,30 +34,34 @@ const Appointment* List::find(const char *subject) const {
         return NULL;
 }
 
-List& List::operator=(const List &list) {
+// Assigns new list to old list, but dellocates all nodes of old list first
+template <typename T>
+List<T>& List<T>::operator=(const List<T> &list) {
         if (this == &list)
                 return *this;
 
-        Node *tail = NULL;
+        Node<T> *tail = NULL;
 
-        for (Node *current = head; current; current = head) {
+        for (Node<T> *current = head; current; current = head) {
                 head = current->next;
                 delete current;
         }
 
-        for (Node *current = list.head; current; current = current->next) {
+        for (Node<T> *current = list.head; current; current = current->next) {
                 if (tail)
-                        tail = tail->next = new Node(NULL, new Appointment(*current->data));
+                        tail = tail->next = new Node<T>(NULL, current->data->clone());
                 else
-                        tail = head = new Node(NULL, new Appointment(*current->data));
+                        tail = head = new Node<T>(NULL, current->data->clone());
         }
 
         return *this;
 }
 
-const Appointment* List::operator[](int index) const {
+// Returns the value at the given index of linked list
+template <typename T>
+const T List<T>::operator[](int index) const {
         int i;
-        Node *current = NULL;
+        Node<T> *current = NULL;
 
         for (i = 0, current = head; i < index && current; i++, current = current->next);
 
@@ -59,48 +71,34 @@ const Appointment* List::operator[](int index) const {
         return NULL;
 }
 
-Appointment*& List::operator[](int index) {
-        int i;
-        Node *current = NULL, *tail = NULL;
-
-        for (i = 0, current = head; i < index && current; i++, current = current->next)
-                tail = current;
-
-        if (!current) {
-                if (tail)
-                        tail = tail->next = new Node(NULL, NULL);
-                else
-                        tail = head = new Node(NULL, NULL);
-
-                return tail->data;
-        }
-
-        return current->data;
-}
-
-List& List::operator+=(Appointment *appt) {
-        Node *current = NULL, *prev = NULL;
-        
+// Adds a new node to the list
+template <typename T>
+List<T>& List<T>::operator+=(T appt) {
+        Node<T> *current = NULL, *prev = NULL;
         for (current = head; current && *current->data < *appt; current = current->next)
                 prev = current;
 
         if (prev)
-                prev->next = new Node(current, appt);
+                prev->next = new Node<T>(current, appt);
         else
-                head = new Node(current, appt);
+                head = new Node<T>(current, appt);
 
         return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, const List &list) {
-        for (Node *current = list.head; current; current = current->next)
+// Prints out the contents of the linked list
+template <typename T>
+std::ostream& operator<<(std::ostream &os, const List<T> &list) {
+        for (Node<T> *current = list.head; current; current = current->next)
                 os << *current->data << '\n';
 
         return os;
 }
 
-List::~List() {
-        for (Node *current = head; current; current = head) {
+// Dellocates memory used by the nodes of a list
+template <typename T>
+List<T>::~List() {
+        for (Node<T> *current = head; current; current = head) {
                 head = current->next;
                 delete current;
         }

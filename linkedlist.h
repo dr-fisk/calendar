@@ -4,28 +4,35 @@
 #include "appt.h"
 #include <iostream>
 
-class List;
+template <typename T> class List;
 
+template <typename T>
+std::ostream& operator<<(std::ostream &os, const List<T> &list);
+
+
+template <typename T>
 class Node {
-        Node *next;
-        Appointment *data;
-        friend List;
-        friend std::ostream& operator<<(std::ostream& os, const List &list);
-        Node(Node *next, Appointment *data);
-        ~Node();
+        Node<T> *next;
+        T data;
+        friend List<T>;
+        friend std::ostream& operator<< <T> (std::ostream &os, const List<T> &list);
+        Node<T>(Node<T> *next, T data);
+        ~Node<T>();
 };
 
+template <typename T>
 class List {
-        Node *head;
+        Node<T> *head;
         public: 
-                List();
-                ~List();
-                const Appointment* find(const char *subject) const;
-                List& operator=(const List &list);
-                List& operator+=(Appointment* appt);
-                const Appointment* operator[](int index) const;
-                Appointment*& operator[](int index);
-                friend std::ostream& operator<<(std::ostream& os, const List &list);
+                List<T>();
+                ~List<T>();
+                const T find(const char *subject) const;
+                List<T>& operator=(const List<T> &list);
+                List<T>& operator+=(T appt);
+                const T operator[](int index) const;
+                friend std::ostream& operator<< <T> (std::ostream &os, const List<T> &list);
 };
+
+#include "linkedlist.cpp"
 
 #endif

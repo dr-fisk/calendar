@@ -3,6 +3,9 @@
 #include "calendar.h"
 #include "appt.h"
 
+// TODO: Handle string inputs 
+// Prints menu and calls functions user inputs
+
 int getChoice() {
         int choice;
         char line[80];

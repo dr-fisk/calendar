@@ -2,23 +2,19 @@
 #define CALENDAR_H
 
 #include "day.h"
+#include "dayofweek.h"
+#include "vector.h"
 
-class Calendar
-{
-  Day *days;
-  int size;
-  int count;
-
-  public:
-    Calendar();
-    ~Calendar();
-    friend std::istream& operator>>(std::istream& is, Calendar &calendar);
-    void resize();
-    void dateSearch();
-    void subjectSearch() const;
-    void addAppointment();
-    int findDay(int month, int day, int year);
-    void getDate(int *month, int *day, int * year);
+class Calendar {
+        Vector <Day> days;
+        public:
+                Calendar();
+                void createSeries(const Weekly &weekly, int month, int day, int year);
+                void dateSearch() const;
+                void subjectSearch() const;
+                void addAppointment();
+                void getDate(int *month, int *day, int * year) const;
+                friend std::istream& operator>>(std::istream &is, Calendar &calendar);
 };
 
 

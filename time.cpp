@@ -4,9 +4,11 @@
 
 #include "time.h"
 
+// Default constructor
 Time::Time() {
 }
 
+// Parses line to contsruct a new time object
 std::istream& operator>>(std::istream& is, Time &time) {
         char line[15];
         is.getline(line, 3, ':');
@@ -24,17 +26,20 @@ std::istream& operator>>(std::istream& is, Time &time) {
         return is;
 }
 
+// Prints out the contents of time object
 std::ostream& operator<<(std::ostream& os, const Time &time) {
         os << std::setw(2) << std::setfill('0') << time.hour << ":"
            << std::setw(2) << time.minute << ' ' << std::setfill(' ');
         return os;
 }
 
+// Returns true if hour is less than rhs time object
 const bool Time::operator<(const Time &rhs) const {
         return hour < rhs.hour || 
                 (hour == rhs.hour && minute < rhs.minute);
 }
 
+// Gets user input to construct time object
 void Time::getTime() {
         char colon;
         std::cin >> hour >> colon >> minute;
@@ -52,5 +57,6 @@ void Time::getTime() {
 
 }
 
+// Destructor
 Time::~Time() {
 }
