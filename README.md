@@ -1,7 +1,7 @@
 <header>
   <h1> Calendar</h1>
+  <h3>Ensure that DOW.dat and appts.csv is located within the same directory of the executable</h3>
 </header>
-<h3>Ensure that DOW.dat and appts.csv is located within the same directory of the executable</h3>
   <body>
     <div>
       <p>Usage: ./calendar.out appts.csv</p>
@@ -20,7 +20,7 @@
         For simplicity, every month contains 31 days
         DOW.dat is a little outdated, only containing dates up to 2017
         This program makes use of OOP, polymorphism, and templating. There are a couple features planned for the future
-        like writing back to appts.csv when a user creates a new appointment
+        like writing back to appts.csv when a user creates a new appointment.
       </p>
     </div>
 </body>
