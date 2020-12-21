@@ -1,19 +1,15 @@
 <header>
-  <h1> calendar</h1>
+  <h1> Calendar</h1>
 </header>
 <h3>Ensure that DOW.dat and appts.csv is located within the same directory of the executable</h3>
   <body>
     <div>
-      <body>
-        <p>Usage: ./calendar.out appts.csv</p>
-        <li>
-              Search for a date
-              Search for a subject
-              Add appointment
-              Get the appointment count
-        </li>
-      </body>
-    </div
+      <p>Usage: ./calendar.out appts.csv</p>
+      <li>Search for a date</li>
+      <li>Search for a subject</li>
+      <li>Add appointment</li>
+      <li>Get the appointment count</li>
+    </div>
     The program works by reading in the appointments in appt.csv
     These appointments are then stored in a calendar object which contains a resizing array of days
     The days contain a set array of appointments
